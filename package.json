@@ -1,0 +1,43 @@
+{
+  "name": "volto-mosaic",
+  "version": "0.0.10",
+  "description": "Edit/view package for volto using gridlayout",
+  "main": "dist/index.js",
+  "scripts": {
+    "prepublishOnly": "babel ./src --out-dir ./dist -s inline"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/eea/volto-gridlayout.git"
+  },
+  "files": [
+    "dist/*"
+  ],
+  "keywords": [
+    "volto",
+    "mosaic",
+    "Plone"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/eaudeweb/volto-gridlayout/issues"
+  },
+  "homepage": "https://github.com/eaudeweb/volto-gridlayout#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.6.0",
+    "@babel/core": "^7.6.0",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/preset-env": "^7.6.0",
+    "@babel/preset-react": "^7.0.0",
+    "babel-plugin-transform-runtime-file-extensions": "^2.0.0"
+  },
+  "dependencies": {
+    "performant-array-to-tree": "^1.7.1",
+    "re-resizable": "^6.4.0",
+    "react-resizable": "^1.10.1"
+  },
+  "peerDependencies": {
+    "@plone/volto": "^4.0.0.alpha-17"
+  }
+}
