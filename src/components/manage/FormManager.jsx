@@ -139,15 +139,15 @@ const FormManager = WrappedComponent => props => {
   }
 
   console.log('formData in manage', formData);
-  // const updateFormData = fdata => {
-  //   setFormData(fdata);
-  // };
+  const updateFormData = fdata => {
+    setFormData(makeClassMapping(fdata));
+  };
   const updatedProps = {
     ...props,
     formData: {
       ...formData,
     },
-    setFormData,
+    setFormData: updateFormData,
     setActiveScreenSize,
     activeScreenSize,
     availableScreens,

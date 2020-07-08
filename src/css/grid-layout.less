@@ -13,7 +13,7 @@
   align-items    : flex-start;
   width          : 100% !important;
   padding        : 0rem;
-
+  
   // height: 100%;
   .row {
     display        : flex;
@@ -155,8 +155,28 @@
     .viewport-columns(column);
   }
 
+  // lg: 1600, md: 1200, sm: 768, xs: 350, xxs: 0
+  &.layout-lg {
+    width: 1600px!important;
+    .viewport-columns(lg);
+  }
+  &.layout-md {
+    width: 1200px!important;
+
+    .viewport-columns(md);
+  }
+  &.layout-sm {
+    width: 768px!important;
+    .viewport-columns(sm);
+  }
+  &.layout-xs {
+    width: 350px!important;
+    .viewport-columns(xs);
+  }
 }
 
 
 
 .loadAddonOverrides();
+
+// lg,md,sm,xs

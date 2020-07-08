@@ -22,7 +22,7 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Resizable, ResizableBox } from 'react-resizable';
 import onChangeWidth from './methods/Form/onChangeWidth';
 import { unflattenToHTML } from 'volto-gridlayout/helpers';
-import { widthClass } from 'volto-gridlayout/constants'
+import { widthClass } from 'volto-gridlayout/constants';
 
 const grid = 12;
 // Needed for SSR, see See https://github.com/ctrlplusb/react-sizeme
@@ -126,7 +126,7 @@ function RenderItems({
                 activeScreenSize={activeScreenSize}
                 setFormData={setFormData}
               >
-                {children.length && (
+                {children.length ? (
                   <RenderItems
                     items={children}
                     formData={formData}
@@ -138,6 +138,8 @@ function RenderItems({
                     previewBlocks={previewBlocks}
                     activeScreenSize={activeScreenSize}
                   />
+                ) : (
+                  ''
                 )}
                 {provided.placeholder}
               </RowPlaceholder>
@@ -351,7 +353,7 @@ const GridLayout = ({
   console.log('in grid layout', gridWidth, size.width);
 
   return (
-    <div className="grid-layout">
+    <div className={`grid-layout layout-${activeScreenSize}`}>
       <DragDropContext
         onBeforeCapture={onBeforeCapture}
         onBeforeDragStart={onBeforeDragStart}
