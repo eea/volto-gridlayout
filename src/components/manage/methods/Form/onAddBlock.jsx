@@ -37,18 +37,24 @@ const onAddBlock = ({
     width: width || 12,
     type: type || 'row',
   };
+  console.log(
+    'grid_layout in add',
+    formData[blocksLayoutFieldname].grid_layout,
+  );
+  let newGridLayout = {};
+  Object.keys(formData[blocksLayoutFieldname].grid_layout).forEach(key => {
+    newGridLayout[key] = [
+      ...formData[blocksLayoutFieldname].grid_layout[key],
+      newBlock,
+    ];
+  });
+
   if (className === 'column') {
     setFormData({
       ...formData,
       [blocksLayoutFieldname]: {
         items: [...(formData[blocksLayoutFieldname].items || []), id],
-        grid_layout: {
-          ...formData[blocksLayoutFieldname].grid_layout,
-          [activeScreenSize]: [
-            ...formData[blocksLayoutFieldname].grid_layout[activeScreenSize],
-            newBlock,
-          ],
-        },
+        grid_layout: newGridLayout,
       },
       [blocksFieldname]: {
         ...formData[blocksFieldname],
@@ -62,13 +68,7 @@ const onAddBlock = ({
       ...formData,
       [blocksLayoutFieldname]: {
         items: [...(formData[blocksLayoutFieldname].items || []), id],
-        grid_layout: {
-          ...formData[blocksLayoutFieldname].grid_layout,
-          [activeScreenSize]: [
-            ...formData[blocksLayoutFieldname].grid_layout[activeScreenSize],
-            newBlock,
-          ],
-        },
+        grid_layout: newGridLayout,
       },
     });
   }

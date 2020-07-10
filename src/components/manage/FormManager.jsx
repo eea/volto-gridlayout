@@ -33,8 +33,6 @@ const makeClassMapping = formData => {
       ...container,
       ...classMapping,
     };
-    console.log('classMapping', classMapping);
-    console.log('key', key, container);
     return container;
   }, {});
 
