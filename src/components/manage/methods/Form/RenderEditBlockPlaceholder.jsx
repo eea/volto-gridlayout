@@ -39,17 +39,17 @@ const RenderEditBlockPlaceholder = ({
         {/* <div className="block-size-info">cols: {blockLayout.width}</div> */}
         <div>
           <h4>
-            {id} - {blockLayout.position} - {blockLayout.width}
+            {title} - {blockLayout.position} - {blockLayout.width}
           </h4>
         </div>
-        <Button.Group size="mini">
-          <Button size="mini" icon color="green" onClick={() => handleOpen(id)}>
-            <Icon name={editIcon} size="10" />
+        <div className="block-edit-controls">
+          <Button basic color="blue" icon onClick={() => handleOpen(id)}>
+            <Icon name={editIcon} size="20" />
           </Button>
-          <Button size="mini" icon color="red" onClick={() => removeItem(id)}>
-            <Icon name={deleteIcon} size="10" />
+          <Button basic color="red" icon onClick={() => removeItem(id)}>
+            <Icon name={deleteIcon} size="20" />
           </Button>
-        </Button.Group>
+        </div>
       </div>
     </div>
   );

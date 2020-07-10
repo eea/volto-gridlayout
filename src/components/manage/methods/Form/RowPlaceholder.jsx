@@ -3,17 +3,16 @@ import { blocks } from '~/config';
 import { Radio, Button } from 'semantic-ui-react';
 import { Icon } from '@plone/volto/components'; // EditBlock
 import deleteIcon from '@plone/volto/icons/delete.svg';
-import editIcon from '@plone/volto/icons/editing.svg';
+import addIcon from '@plone/volto/icons/add.svg';
 import { getBlocksFieldname } from '@plone/volto/helpers';
-import onAddBlock from './onAddBlock'
-
+import onAddBlock from './onAddBlock';
 const renderRowPlaceholder = ({
   children,
   blockLayout,
   formData,
   removeItem,
   activeScreenSize,
-  setFormData
+  setFormData,
 }) => {
   // console.log('row props', children, blockLayout, parentId, formData, addBlock);
   const currentRowItems = formData.blocks_layout.grid_layout[
@@ -32,35 +31,30 @@ const renderRowPlaceholder = ({
 
   return (
     <React.Fragment>
-      <Button
-        size="mini"
-        icon
-        color="green"
-        style={{ position: 'absolute', top: '1rem', right: '1rem' }}
-        onClick={() =>
-          onAddBlock({
-            type: 'text',
-            formData,
-            className: 'column',
-            position: position,
-            parentId: blockLayout.id,
-            width: 6,
-            activeScreenSize,
-            setFormData,
-          })
-        }
-      >
-        Add column
-      </Button>
-      <Button
-        size="mini"
-        icon
-        color="red"
-        style={{ position: 'absolute', top: '1rem', left: '1rem' }}
-        onClick={() => removeItem(currentRowItemsIds)}
-      >
-        Remove row
-      </Button>
+      <div className="row-edit-controls">
+        <Icon
+          onClick={() =>
+            onAddBlock({
+              type: 'text',
+              formData,
+              className: 'column',
+              position: position,
+              parentId: blockLayout.id,
+              width: 6,
+              activeScreenSize,
+              setFormData,
+            })
+          }
+          name={addIcon}
+          size="20"
+        />
+
+        <Icon
+          onClick={() => removeItem(currentRowItemsIds)}
+          name={deleteIcon}
+          size="20"
+        />
+      </div>
       {children}
     </React.Fragment>
   );

@@ -46,7 +46,7 @@ const getItemStyle = (isDragging, draggableStyle) => ({
   margin: `0 0 0 0`,
 
   // change background colour if dragging
-  background: isDragging ? 'lightgreen' : 'grey',
+  background: isDragging ? 'lightgreen' : 'transparent',
 
   // styles we need to apply on draggables
   ...draggableStyle,
@@ -94,7 +94,7 @@ function RenderItems({
       className={
         data.className === 'row'
           ? data.className
-          : formData.blocks_layout.classMapping[data.id]
+          : 'column' + formData.blocks_layout.classMapping[data.id]
       }
       position={data.position}
     >
@@ -107,7 +107,7 @@ function RenderItems({
         className={
           data.className === 'row'
             ? data.className
-            : formData.blocks_layout.classMapping[data.id]
+            : 'column' +  formData.blocks_layout.classMapping[data.id]
         }
         position={data.position}
       >
