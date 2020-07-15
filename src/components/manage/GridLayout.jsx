@@ -28,9 +28,14 @@ const grid = 12;
 // Needed for SSR, see See https://github.com/ctrlplusb/react-sizeme
 withSize.noPlaceholders = true;
 
-const getListStyle = isDraggingOver => ({
-  background: isDraggingOver ? 'lightblue' : 'lightgrey',
+const getListStyle = (isDraggingOver, grid_layout, currentItemId) => ({
+  background: isDraggingOver ? 'lightblue' : 'transparent',
   padding: 0,
+  zIndex: isDraggingOver
+    ? 'unset'
+    : grid_layout.length -
+      grid_layout.indexOf(grid_layout.find(item => item.id === currentItemId)),
+  position: 'relative',
 });
 
 const range = (start, end) => {
@@ -47,7 +52,7 @@ const getItemStyle = (isDragging, draggableStyle) => ({
 
   // change background colour if dragging
   background: isDragging ? 'lightgreen' : 'transparent',
-
+  zIndex: isDragging ? '0' : '9999',
   // styles we need to apply on draggables
   ...draggableStyle,
 });
@@ -87,6 +92,9 @@ function RenderItems({
     });
   }
 
+  const grid_layout =
+    formData[blocksLayoutFieldname].grid_layout[activeScreenSize];
+  console.log('griditemslength', grid_layout);
   // const columnsBasedOnWidth =
   return gridItems.map(({ children, data }) => (
     <div
@@ -107,15 +115,18 @@ function RenderItems({
         className={
           data.className === 'row'
             ? data.className
-            : 'column' +  formData.blocks_layout.classMapping[data.id]
+            : 'column' + formData.blocks_layout.classMapping[data.id]
         }
         position={data.position}
       >
         {(provided, snapshot) => (
           <div
             ref={provided.innerRef}
-            style={getListStyle(snapshot.isDraggingOver)}
+            style={getListStyle(snapshot.isDraggingOver, grid_layout, data.id)}
             {...provided.droppableProps}
+            // style={{
+
+            // }}
           >
             {data.type === 'row' ? (
               <RowPlaceholder
@@ -149,6 +160,23 @@ function RenderItems({
                   width={columnsWidths[data.width]}
                   axis="x"
                   // snap={{ x: [12] }}
+                  onResizeStart={(e, d) => {
+                    const beforeWidth = columnsWidths[data.width];
+                    const afterWidth = d.size.width;
+                    setFormData(
+                      onChangeWidth({
+                        beforeWidth,
+                        afterWidth,
+                        columnWidth: data.width,
+                        formData: formData,
+                        blockLayout: data,
+                        columnsWidths,
+                        snapWidths,
+                        activeScreenSize,
+                      }),
+                    );
+                    return d;
+                  }}
                   onResizeStop={(e, d) => {
                     const beforeWidth = columnsWidths[data.width];
                     const afterWidth = d.size.width;
@@ -233,10 +261,8 @@ const moveItemInArrayFromIndexToIndex = ({
   }
 
   newArray[toIndex] = target;
-  console.log('newarray', newArray);
   return newArray.map(item => {
     const newPosition = newArray.indexOf(item);
-    console.log('asta e', toIndex === newPosition, item);
     return {
       ...item,
       position: newPosition,
@@ -257,10 +283,8 @@ const GridLayout = ({
   previewBlocks,
   activeScreenSize,
 }) => {
-  console.log('formdata in grid layout', formData);
   const onDragEnd = result => {
     const { source, destination } = result;
-    console.log('formdata in ondragend', formData);
     if (!destination) {
       return;
     }

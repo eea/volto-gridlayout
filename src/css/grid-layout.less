@@ -67,7 +67,10 @@
           
           >.react-resizable {
             height: 100%;
-            
+            .block-edit-wrapper {
+              background: white;
+              box-shadow: 2px 0px 3px 0 #00000036;
+            }
             > div[data-rbd-draggable-id] {
               height: 100%;
             }
@@ -82,8 +85,10 @@
   }
 
   .column {
-    border: 1px dashed black;
+    // border: 1px dashed black;
     width : 100%;
+ 
+    // border: none;
   }
 
   .flex-size(@col) {
