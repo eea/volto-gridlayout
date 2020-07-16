@@ -58,9 +58,10 @@ const FormManager = WrappedComponent => props => {
         grid_layout: {
           lg: initialFormData[blocksLayoutFieldname].items.map((v, k) => ({
             id: v,
-            className: 'row',
+            className: 'col',
             position: k,
             parentId: null,
+            width: 12,
           })),
         },
       },

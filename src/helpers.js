@@ -1,6 +1,5 @@
 import { arrayToTree } from 'performant-array-to-tree';
 
-
 export function reject(obj, keys) {
   return Object.keys(obj)
     .filter(k => !keys.includes(k))
@@ -35,6 +34,17 @@ export function unflattenToHTML({ blocks_layout, activeScreenSize }) {
       },
       {},
     );
+  } else if (!blocks_layout.mosaic_layout && !blocks_layout.grid_layout) {
+    grid_layout = {
+      lg: blocks_layout.items.map((item, index) => ({
+        id: item,
+        className: 'column',
+        position: index,
+        parentId: null,
+        width: 12,
+        type: 'column',
+      })),
+    };
   } else {
     // grid_layout = blocks_layout.grid_layout.map(item => ({
     //   ...item,

@@ -15,6 +15,7 @@ import { Portal } from 'react-portal';
 import { Icon as VoltoIcon } from '@plone/volto/components';
 import FormField from 'volto-mosaic/components/manage/FormField';
 import checkIcon from '@plone/volto/icons/check.svg';
+import { keys, map, mapValues } from 'lodash';
 
 import onAddBlock from './methods/Form/onAddBlock';
 import onShowBlock from './methods/Form/onShowBlock';
@@ -99,7 +100,11 @@ const Form = props => {
     if (submitData.data.formData) {
       setFormData(submitData.data.formData);
     }
-    if (submitData.afterUpdate) {
+    if (
+      submitData.afterUpdate &&
+      typeof submitData.afterUpdate === 'function'
+    ) {
+      console.log('submitdata', submitData.afterUpdate);
       submitData.afterUpdate();
     }
   };
@@ -120,43 +125,140 @@ const Form = props => {
         setFormData={updateFormData}
         activeScreenSize={props.activeScreenSize}
       />
-      <SidebarPortal selected>
-        <FormField id="add-row" title="Add row">
-          <Button
-            onClick={() =>
-              onAddBlock({
-                formData,
-                activeScreenSize: props.activeScreenSize,
-                setFormData: updateFormData,
-              })
-            }
+
+      <Portal node={__CLIENT__ && document.getElementById('sidebar-metadata')}>
+        {/* <SidebarPortal selected> */}
+        <React.Fragment>
+          <div style={{display: 'block', padding: '10px'}}>
+            <FormField id="add-row" title="Add row">
+              <Button
+                onClick={() =>
+                  onAddBlock({
+                    formData,
+                    activeScreenSize: props.activeScreenSize,
+                    setFormData: updateFormData,
+                  })
+                }
+              >
+                Add row
+              </Button>
+            </FormField>
+            <FormField id="preview-control" title="Preview blocks">
+              <Checkbox
+                toggle
+                id="preview-toggle"
+                onChange={(ev, data) => {
+                  console.log('pvewi toggle', data);
+                  setPreviewBlocks(data.checked);
+                }}
+                label="Preview blocks"
+              />
+            </FormField>
+            <FormField id="select-screensize" title="Select screen size">
+              <Dropdown
+                inline
+                onChange={(event, data) => {
+                  props.setActiveScreenSize(data.value);
+                }}
+                options={getAvailableScreens()}
+                selection
+                value={props.activeScreenSize}
+              />
+            </FormField>
+          </div>
+
+          <UiForm
+            method="post"
+            onSubmit={onSubmit}
+            error={keys(errors).length > 0}
           >
-            Add row
-          </Button>
-        </FormField>
-        <FormField id="preview-control" title="Preview blocks">
-          <Checkbox
-            toggle
-            id="preview-toggle"
-            onChange={(ev, data) => {
-              console.log('pvewi toggle', data);
-              setPreviewBlocks(data.checked);
-            }}
-            label="Preview blocks"
-          />
-        </FormField>
-        <FormField id="select-screensize" title="Select screen size">
-          <Dropdown
-            inline
-            onChange={(event, data) => {
-              props.setActiveScreenSize(data.value);
-            }}
-            options={getAvailableScreens()}
-            selection
-            value={props.activeScreenSize}
-          />
-        </FormField>
-      </SidebarPortal>
+            {schema &&
+              map(schema.fieldsets, item => [
+                <Segment secondary attached key={item.title}>
+                  {item.title}
+                </Segment>,
+                <Segment attached key={`fieldset-contents-${item.title}`}>
+                  {map(item.fields, (field, index) => (
+                    <Field
+                      {...schema.properties[field]}
+                      id={field}
+                      focus={false}
+                      value={formData[field]}
+                      required={schema.required.indexOf(field) !== -1}
+                      onChange={(id, value) =>
+                        props.setFormData({
+                          ...formData,
+                          [id]: value || null,
+                        })
+                      }
+                      onSave={({ blocks, blocks_layout }) => {
+                        let currentFormData = {
+                          ...formData,
+                          blocks,
+                          blocks_layout,
+                        };
+                        const ids = {
+                          title: uuid(),
+                          text: uuid(),
+                        };
+                        const blocksFieldname = getBlocksFieldname(
+                          currentFormData,
+                        );
+                        const blocksLayoutFieldname = getBlocksLayoutFieldname(
+                          currentFormData,
+                        );
+                        if (!currentFormData) {
+                          // get defaults from schema
+                          currentFormData = mapValues(
+                            props.schema.properties,
+                            'default',
+                          );
+                        }
+                        // defaults for block editor; should be moved to schema on server side
+                        // if (!currentFormData[blocksLayoutFieldname]) {
+                        //   currentFormData[blocksLayoutFieldname] = {
+                        //     items: [ids.title, ids.text],
+                        //   };
+                        // }
+                        // if (!currentFormData[blocksFieldname]) {
+                        //   currentFormData[blocksFieldname] = {
+                        //     [ids.title]: {
+                        //       '@type': 'title',
+                        //       mosaic_block_title: 'title block',
+                        //     },
+                        //     [ids.text]: {
+                        //       '@type': 'text',
+                        //       mosaic_block_title: 'text block',
+                        //     },
+                        //   };
+                        // }
+                        // const currentActiveMosaicLayout = currentFormData
+                        //   ?.blocks_layout?.mosaic_layout
+                        //   ? currentFormData.blocks_layout.mosaic_layout[
+                        //       activeScreenSize
+                        //     ]
+                        //   : fallbackLayoutFromData(currentFormData, ids);
+                        // if (
+                        //   !currentFormData[blocksLayoutFieldname].mosaic_layout
+                        // ) {
+                        //   currentFormData[
+                        //     blocksLayoutFieldname
+                        //   ].mosaic_layout = {
+                        //     lg: currentActiveMosaicLayout,
+                        //   };
+                        // }
+                        props.setFormData(currentFormData);
+                      }}
+                      key={field}
+                      error={errors[field]}
+                    />
+                  ))}
+                </Segment>,
+              ])}
+          </UiForm>
+        </React.Fragment>
+      </Portal>
+      {/* </SidebarPortal> */}
       {showModal.modal ? (
         <BlockEditor
           blockid={showModal.currentBlock}
