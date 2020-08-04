@@ -64,12 +64,17 @@
         }
         > div[data-rbd-droppable-id] {
           height: 100%;
-          
+          .react-resizable-handle-se {
+            bottom: 5px;
+            right: 5px;
+          }
           >.react-resizable {
             height: 100%;
+            padding: 2px;
             .block-edit-wrapper {
-              background: white;
-              box-shadow: 2px 0px 3px 0 #00000036;
+              background: transparent;
+              border: 1px dashed #444;
+              // box-shadow: 2px 0px 3px 0 #00000036;
             }
             > div[data-rbd-draggable-id] {
               height: 100%;

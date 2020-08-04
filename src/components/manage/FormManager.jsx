@@ -13,6 +13,7 @@ import {
   screenSizesOrder,
 } from '../../constants';
 import { widthClass } from 'volto-gridlayout/constants';
+import { v4 as uuid } from 'uuid';
 
 const makeClassMapping = formData => {
   const blocksLayoutFieldname = getBlocksLayoutFieldname();
@@ -44,13 +45,20 @@ const FormManager = WrappedComponent => props => {
   let formDataOrdered;
 
   const blocksLayoutFieldname = getBlocksLayoutFieldname(props.formData);
-
+  const blocksFieldName = getBlocksFieldname(props.formData)
   useEffect(() => {
     require('../../css/grid-layout.less');
   }, []);
   const [activeScreenSize, setActiveScreenSize] = useState('lg');
 
   if (!initialFormData[blocksLayoutFieldname].grid_layout) {
+    const OGparent = uuid();
+    initialFormData[blocksLayoutFieldname].items.unshift(OGparent);
+    // initialFormData[blocksFieldName][OGparent] = {
+    //   '@type': undefined,
+    // }
+    console.log('initialformdata', initialFormData)
+
     initialFormData = {
       ...initialFormData,
       [blocksLayoutFieldname]: {
@@ -58,10 +66,11 @@ const FormManager = WrappedComponent => props => {
         grid_layout: {
           lg: initialFormData[blocksLayoutFieldname].items.map((v, k) => ({
             id: v,
-            className: 'col',
-            position: k,
-            parentId: null,
-            width: 12,
+            className: v === OGparent ? 'row' : 'column',
+            position: v === OGparent ? 0 : k + 1,
+            parentId: v === OGparent ? null : OGparent,
+            width: 6,
+            type: v === OGparent ? 'row' : 'column'
           })),
         },
       },

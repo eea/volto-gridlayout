@@ -16,7 +16,7 @@ export function fromEntries(iterable) {
 }
 
 export function unflattenToHTML({ blocks_layout, activeScreenSize }) {
-  // console.log('blocks layout in unflatten', blocks_layout);
+  console.log('blocks layout in unflatten', blocks_layout);
   let grid_layout = {};
   if (blocks_layout.mosaic_layout && !blocks_layout.grid_layout) {
     grid_layout = Object.keys(blocks_layout.mosaic_layout).reduce(
@@ -24,9 +24,9 @@ export function unflattenToHTML({ blocks_layout, activeScreenSize }) {
         return {
           [key]: blocks_layout.mosaic_layout[key].map(item => ({
             id: item.i || item.id,
-            className: item.className || 'row',
-            position: item.position || 0,
-            parentId: item.parentId || null,
+            className: 'column',
+            position: 1,
+            parentId: 0,
             width: 12,
             type: 'row',
           })),

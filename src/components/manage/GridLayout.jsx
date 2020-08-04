@@ -31,10 +31,6 @@ withSize.noPlaceholders = true;
 const getListStyle = (isDraggingOver, grid_layout, currentItemId) => ({
   background: isDraggingOver ? 'lightblue' : 'transparent',
   padding: 0,
-  zIndex: isDraggingOver
-    ? 'unset'
-    : grid_layout.length -
-      grid_layout.indexOf(grid_layout.find(item => item.id === currentItemId)),
   position: 'relative',
 });
 
@@ -52,7 +48,6 @@ const getItemStyle = (isDragging, draggableStyle) => ({
 
   // change background colour if dragging
   background: isDragging ? 'lightgreen' : 'transparent',
-  zIndex: isDragging ? '0' : '9999',
   // styles we need to apply on draggables
   ...draggableStyle,
 });
