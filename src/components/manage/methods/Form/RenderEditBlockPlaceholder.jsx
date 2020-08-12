@@ -1,10 +1,13 @@
 import React from 'react';
 import { blocks } from '~/config';
-import { Radio, Button } from 'semantic-ui-react';
-import { Icon } from '@plone/volto/components'; // EditBlock
+import { Button } from 'semantic-ui-react';
 import deleteIcon from '@plone/volto/icons/delete.svg';
 import editIcon from '@plone/volto/icons/editing.svg';
 import { getBlocksFieldname } from '@plone/volto/helpers';
+import onAddBlock from './onAddBlock';
+import { Icon } from '@plone/volto/components'; // EditBlock
+import addIcon from '@plone/volto/icons/add.svg';
+import { getBlocksLayoutFieldname } from '@plone/volto/helpers';
 
 const RenderEditBlockPlaceholder = ({
   blockLayout,
@@ -13,11 +16,30 @@ const RenderEditBlockPlaceholder = ({
   handleOpen,
   addBlock,
   parentId,
+  activeScreenSize,
+  setFormData,
 }) => {
+  const blocksLayoutFieldname = getBlocksLayoutFieldname(formData);
+
   const blocksFieldname = getBlocksFieldname(formData);
   const { id } = blockLayout;
   let block = formData[blocksFieldname][id];
   const hasData = block?.['@type'] !== 'text';
+
+  // console.log('row props', children, blockLayout, parentId, formData, addBlock);
+  const currentRowItems = formData[blocksLayoutFieldname].grid_layout[
+    activeScreenSize
+  ].filter(item => item.parentId === blockLayout.id);
+  let position = 0;
+  let currentRowItemsIds = [blockLayout.id];
+  if (currentRowItems.length) {
+    position =
+      Math.max(...currentRowItems.map(item => parseInt(item.position))) + 1;
+    currentRowItemsIds = [
+      ...currentRowItemsIds,
+      ...currentRowItems.map(item => item.id),
+    ];
+  }
 
   let title = '';
 
@@ -43,6 +65,26 @@ const RenderEditBlockPlaceholder = ({
           </h4>
         </div>
         <div className="block-edit-controls">
+          <Icon
+            onClick={() =>
+              onAddBlock({
+                type: 'row',
+                formData,
+                className: 'row',
+                position: position,
+                parentId: blockLayout.id,
+                activeScreenSize,
+                setFormData,
+              })
+            }
+            name={addIcon}
+            size="20"
+          />
+          <Icon
+            onClick={() => removeItem(currentRowItemsIds)}
+            name={deleteIcon}
+            size="20"
+          />
           <Button basic color="blue" icon onClick={() => handleOpen(id)}>
             <Icon name={editIcon} size="20" />
           </Button>

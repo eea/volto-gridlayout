@@ -1,8 +1,6 @@
 import { getBlocksFieldname } from '@plone/volto/helpers';
 
 const handleCloseEditor = ({ blockData, currentBlock, formData }) => {
-  console.log('blockid in close', blockData);
-
   if (!blockData) {
     return {
       showModal: false,

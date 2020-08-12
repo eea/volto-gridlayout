@@ -28,13 +28,10 @@ const onChangeWidth = ({
 }) => {
   const blocksLayoutFieldname = getBlocksLayoutFieldname(formData);
   const id = blockLayout.id;
-  console.log('formdata in onchangewidth', formData);
   const closestTo = closest(snapWidths, afterWidth);
-  console.log(closestTo);
   const colValue = Object.keys(columnsWidths).find(
     key => columnsWidths[key] === closestTo,
   );
-  console.log(colValue);
   const newGridLayout = formData[blocksLayoutFieldname].grid_layout[
     activeScreenSize
   ].map(item => ({

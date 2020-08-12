@@ -16,16 +16,7 @@ const onAddBlock = ({
 }) => {
   // Handles the creation of a new block in the layout editor
   const id = uuid();
-  console.log(
-    'formdata in addblock',
-    type,
-    formData,
-    className,
-    position,
-    parentId,
-    width,
-  );
-  console.log('classname in asta', className);
+
   // const formData = formData;
   const blocksFieldname = getBlocksFieldname(formData);
   const blocksLayoutFieldname = getBlocksLayoutFieldname(formData);
@@ -37,19 +28,34 @@ const onAddBlock = ({
     width: width || 12,
     type: type || 'row',
   };
-  console.log(
-    'grid_layout in add',
-    formData[blocksLayoutFieldname].grid_layout,
-  );
+
+  let newRowBlock = {};
+
+  if (type === 'empty-column') {
+    newRowBlock = {
+      id: uuid(),
+      className: 'row',
+      position: position + 1,
+      parentId: id,
+      width: 12,
+      type: 'row',
+    };
+  }
+
+  const newStructure = Object.keys(newRowBlock).length
+    ? [newBlock, newRowBlock]
+    : [newBlock];
+
+  console.log('newstructure', newStructure, type);
   let newGridLayout = {};
   Object.keys(formData[blocksLayoutFieldname].grid_layout).forEach(key => {
     newGridLayout[key] = [
       ...formData[blocksLayoutFieldname].grid_layout[key],
-      newBlock,
+      ...newStructure,
     ];
   });
 
-  if (className === 'column') {
+  if (!['row', 'empty-column'].includes(type)) {
     setFormData({
       ...formData,
       [blocksLayoutFieldname]: {

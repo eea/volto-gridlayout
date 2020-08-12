@@ -4,7 +4,6 @@ const onLayoutSave = ({ breakpoint, formData, activeMosaicLayout }) => {
   const blocksLayoutFieldname = getBlocksLayoutFieldname(formData);
   const layoutField = formData[blocksLayoutFieldname];
   const mosaic_layout = layoutField.mosaic_layout || {};
-  console.log('bp in layout save', breakpoint);
   mosaic_layout[breakpoint ? breakpoint : 'lg'] = activeMosaicLayout;
 
   return {

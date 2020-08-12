@@ -1,12 +1,10 @@
 import React from 'react';
-import { blocks } from '~/config';
-import { Radio, Button } from 'semantic-ui-react';
-import { Icon } from '@plone/volto/components'; // EditBlock
 import deleteIcon from '@plone/volto/icons/delete.svg';
 import addIcon from '@plone/volto/icons/add.svg';
-import { getBlocksFieldname } from '@plone/volto/helpers';
 import onAddBlock from './onAddBlock';
+import { Icon } from '@plone/volto/components'; // EditBlock
 import { getBlocksLayoutFieldname } from '@plone/volto/helpers';
+import { Button } from 'semantic-ui-react';
 
 const renderRowPlaceholder = ({
   children,
@@ -52,6 +50,29 @@ const renderRowPlaceholder = ({
           name={addIcon}
           size="20"
         />
+
+        <span
+          style={{
+            display: 'inline-flex',
+            cursor: 'pointer',
+            border: '1px solid #eee',
+          }}
+          onClick={() =>
+            onAddBlock({
+              type: 'empty-column',
+              formData,
+              className: 'column empty',
+              position: position,
+              parentId: blockLayout.id,
+              width: 6,
+              activeScreenSize,
+              setFormData,
+            })
+          }
+        >
+          <Icon name={addIcon} size="20" />
+          Empty col
+        </span>
 
         <Icon
           onClick={() => removeItem(currentRowItemsIds)}

@@ -18,6 +18,8 @@ import { connect } from 'react-redux';
 import BlockViewWrapper from '../theme/BlockViewWrapper';
 import RenderEditBlockPlaceholder from './methods/Form/RenderEditBlockPlaceholder';
 import RowPlaceholder from './methods/Form/RowPlaceholder';
+import EmptyColumnPlaceholder from './methods/Form/EmptyColumnPlaceholder';
+
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Resizable, ResizableBox } from 'react-resizable';
 import onChangeWidth from './methods/Form/onChangeWidth';
@@ -149,7 +151,7 @@ function RenderItems({
                 )}
                 {provided.placeholder}
               </RowPlaceholder>
-            ) : (
+            ) : data.type !== 'empty-column' ? (
               <React.Fragment>
                 <ResizableBox
                   width={columnsWidths[data.width]}
@@ -212,6 +214,8 @@ function RenderItems({
                             handleOpen={handleOpen}
                             removeItem={removeItem}
                             parentId={parentId || data.parentId || data.id}
+                            activeScreenSize={activeScreenSize}
+                            setFormData={setFormData}
                           />
                         ) : (
                           <BlockViewWrapper
@@ -230,6 +234,90 @@ function RenderItems({
                 </ResizableBox>
                 {provided.placeholder}
               </React.Fragment>
+            ) : (
+              <ResizableBox
+                width={columnsWidths[data.width]}
+                axis="x"
+                // snap={{ x: [12] }}
+                onResizeStart={(e, d) => {
+                  const beforeWidth = columnsWidths[data.width];
+                  const afterWidth = d.size.width;
+                  setFormData(
+                    onChangeWidth({
+                      beforeWidth,
+                      afterWidth,
+                      columnWidth: data.width,
+                      formData: formData,
+                      blockLayout: data,
+                      columnsWidths,
+                      snapWidths,
+                      activeScreenSize,
+                    }),
+                  );
+                  return d;
+                }}
+                onResizeStop={(e, d) => {
+                  const beforeWidth = columnsWidths[data.width];
+                  const afterWidth = d.size.width;
+                  setFormData(
+                    onChangeWidth({
+                      beforeWidth,
+                      afterWidth,
+                      columnWidth: data.width,
+                      formData: formData,
+                      blockLayout: data,
+                      columnsWidths,
+                      snapWidths,
+                      activeScreenSize,
+                    }),
+                  );
+                  // return d;
+                }}
+              >
+                <Draggable
+                  key={data.id}
+                  draggableId={data.id}
+                  index={parseInt(data.position)}
+                >
+                  {(provided, snapshot) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                      style={getItemStyle(
+                        snapshot.isDragging,
+                        provided.draggableProps.style,
+                      )}
+                    >
+                      <EmptyColumnPlaceholder
+                        formData={formData}
+                        blockLayout={data}
+                        handleOpen={handleOpen}
+                        removeItem={removeItem}
+                        activeScreenSize={activeScreenSize}
+                        setFormData={setFormData}
+                      >
+                        {children.length ? (
+                          <RenderItems
+                            items={children}
+                            formData={formData}
+                            parentId={data.parentId}
+                            handleOpen={handleOpen}
+                            removeItem={removeItem}
+                            gridWidth={gridWidth}
+                            setFormData={setFormData}
+                            previewBlocks={previewBlocks}
+                            activeScreenSize={activeScreenSize}
+                          />
+                        ) : (
+                          ''
+                        )}
+                        {provided.placeholder}
+                      </EmptyColumnPlaceholder>
+                    </div>
+                  )}
+                </Draggable>
+              </ResizableBox>
             )}
           </div>
         )}
@@ -393,7 +481,6 @@ const GridLayout = ({
           activeScreenSize={activeScreenSize}
           // width={() => {
           //   console.log('in width');
-
           // }}
           setFormData={setFormData}
         />

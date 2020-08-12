@@ -14,7 +14,6 @@ const onSubmit = ({
   onUpdateForm,
   formData,
 }) => {
-  console.log('in on submit')
   if (event) {
     event.preventDefault();
   }
