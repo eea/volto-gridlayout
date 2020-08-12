@@ -11,8 +11,8 @@ const onLayoutDelete = ({ breakpoint, formData }) => {
     activeMosaicLayout: mosaic_layout['lg'],
     formData: {
       ...formData,
-      blocks_layout: {
-        ...formData.blocks_layout,
+      [blocksLayoutFieldname]: {
+        ...formData[blocksLayoutFieldname],
         mosaic_layout,
       },
     },

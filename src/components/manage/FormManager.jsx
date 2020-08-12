@@ -45,7 +45,7 @@ const FormManager = WrappedComponent => props => {
   let formDataOrdered;
 
   const blocksLayoutFieldname = getBlocksLayoutFieldname(props.formData);
-  const blocksFieldName = getBlocksFieldname(props.formData)
+  const blocksFieldName = getBlocksFieldname(props.formData);
   useEffect(() => {
     require('../../css/grid-layout.less');
   }, []);
@@ -57,7 +57,7 @@ const FormManager = WrappedComponent => props => {
     // initialFormData[blocksFieldName][OGparent] = {
     //   '@type': undefined,
     // }
-    console.log('initialformdata', initialFormData)
+    console.log('initialformdata', initialFormData);
 
     initialFormData = {
       ...initialFormData,
@@ -70,7 +70,7 @@ const FormManager = WrappedComponent => props => {
             position: v === OGparent ? 0 : k + 1,
             parentId: v === OGparent ? null : OGparent,
             width: 6,
-            type: v === OGparent ? 'row' : 'column'
+            type: v === OGparent ? 'row' : 'column',
           })),
         },
       },
@@ -79,21 +79,21 @@ const FormManager = WrappedComponent => props => {
   } else {
     formDataOrdered = initialFormData;
     screenSizesOrder.forEach(size => {
-      if (formDataOrdered?.blocks_layout?.grid_layout?.[size])
+      if (formDataOrdered?.[blocksLayoutFieldname]?.grid_layout?.[size])
         formDataOrdered = {
           ...formDataOrdered,
-          blocks_layout: {
-            ...formDataOrdered.blocks_layout,
+          [blocksLayoutFieldname]: {
+            ...formDataOrdered[blocksLayoutFieldname],
             grid_layout: {
-              ...formDataOrdered.blocks_layout.grid_layout,
-              [size]: formDataOrdered.blocks_layout.grid_layout[size].map(
-                item => ({
-                  ...item,
-                  position: formDataOrdered.blocks_layout.grid_layout[
-                    size
-                  ].indexOf(item),
-                }),
-              ),
+              ...formDataOrdered[blocksLayoutFieldname].grid_layout,
+              [size]: formDataOrdered[blocksLayoutFieldname].grid_layout[
+                size
+              ].map(item => ({
+                ...item,
+                position: formDataOrdered[blocksLayoutFieldname].grid_layout[
+                  size
+                ].indexOf(item),
+              })),
             },
           },
         };

@@ -68,7 +68,8 @@ const Form = props => {
   };
 
   const getAvailableScreens = () => {
-    const layouts = formData.blocks_layout?.grid_layout || {};
+    const blocksLayoutFieldname = getBlocksLayoutFieldname(formData);
+    const layouts = formData[blocksLayoutFieldname]?.grid_layout || {};
     const screens = props.availableScreens.map(el => {
       const res = Object.assign({}, el);
       const has = Object.keys(layouts).indexOf(el.value) > -1;
@@ -129,7 +130,7 @@ const Form = props => {
       <Portal node={__CLIENT__ && document.getElementById('sidebar-metadata')}>
         {/* <SidebarPortal selected> */}
         <React.Fragment>
-          <div style={{display: 'block', padding: '10px'}}>
+          <div style={{ display: 'block', padding: '10px' }}>
             <FormField id="add-row" title="Add row">
               <Button
                 onClick={() =>

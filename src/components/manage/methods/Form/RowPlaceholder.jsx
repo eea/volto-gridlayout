@@ -6,6 +6,8 @@ import deleteIcon from '@plone/volto/icons/delete.svg';
 import addIcon from '@plone/volto/icons/add.svg';
 import { getBlocksFieldname } from '@plone/volto/helpers';
 import onAddBlock from './onAddBlock';
+import { getBlocksLayoutFieldname } from '@plone/volto/helpers';
+
 const renderRowPlaceholder = ({
   children,
   blockLayout,
@@ -14,8 +16,10 @@ const renderRowPlaceholder = ({
   activeScreenSize,
   setFormData,
 }) => {
+  const blocksLayoutFieldname = getBlocksLayoutFieldname(formData);
+
   // console.log('row props', children, blockLayout, parentId, formData, addBlock);
-  const currentRowItems = formData.blocks_layout.grid_layout[
+  const currentRowItems = formData[blocksLayoutFieldname].grid_layout[
     activeScreenSize
   ].filter(item => item.parentId === blockLayout.id);
   let position = 0;

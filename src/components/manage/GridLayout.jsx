@@ -97,7 +97,7 @@ function RenderItems({
       className={
         data.className === 'row'
           ? data.className
-          : 'column' + formData.blocks_layout.classMapping[data.id]
+          : 'column' + formData[blocksLayoutFieldname].classMapping[data.id]
       }
       position={data.position}
     >
@@ -110,7 +110,7 @@ function RenderItems({
         className={
           data.className === 'row'
             ? data.className
-            : 'column' + formData.blocks_layout.classMapping[data.id]
+            : 'column' + formData[blocksLayoutFieldname].classMapping[data.id]
         }
         position={data.position}
       >
@@ -288,19 +288,23 @@ const GridLayout = ({
     const destIndex = destination.index;
     const sourceIndex = source.index;
 
-    const destItem = formData.blocks_layout.grid_layout[activeScreenSize].find(
-      item => item.id === dInd,
-    );
+    const blocksLayoutFieldname = getBlocksLayoutFieldname(formData);
+    const blocksFieldName = getBlocksFieldname(formData);
+    const destItem = formData[blocksLayoutFieldname].grid_layout[
+      activeScreenSize
+    ].find(item => item.id === dInd);
     const destRow = destItem?.parentId || destItem?.id;
-    const sourceRow = formData.blocks_layout.grid_layout[activeScreenSize].find(
-      item => item.id === sInd,
-    )?.parentId;
+    const sourceRow = formData[blocksLayoutFieldname].grid_layout[
+      activeScreenSize
+    ].find(item => item.id === sInd)?.parentId;
 
     if (sInd === dInd) {
       console.log('sInd === dInd', result);
     } else {
       let newGridLayout = JSON.parse(
-        JSON.stringify(formData.blocks_layout.grid_layout[activeScreenSize]),
+        JSON.stringify(
+          formData[blocksLayoutFieldname].grid_layout[activeScreenSize],
+        ),
       );
       if (destRow === sourceRow) {
         console.log('samerow');
@@ -333,10 +337,10 @@ const GridLayout = ({
       console.log('newgridlayout', newGridLayout);
       setFormData({
         ...formData,
-        blocks_layout: {
-          ...formData.blocks_layout,
+        [blocksLayoutFieldname]: {
+          ...formData[blocksLayoutFieldname],
           grid_layout: {
-            ...formData.blocks_layout.grid_layout,
+            ...formData[blocksLayoutFieldname].grid_layout,
             [activeScreenSize]: newGridLayout,
           },
         },
