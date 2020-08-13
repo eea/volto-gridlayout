@@ -71,8 +71,14 @@ const RenderItems = ({ items, formData }) => {
       }
       position={data.position}
     >
-      {data.type === 'row' ? (
-        <div className={data.className}>
+      {data.type === 'row' || data.type === 'empty-column' ? (
+        <div
+          className={
+            data.type === 'empty-column'
+              ? 'column ' + formData.blocks_layout.classMapping[data.id]
+              : data.className
+          }
+        >
           {children.length && (
             <RenderItems items={children} formData={formData} />
           )}

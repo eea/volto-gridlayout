@@ -64,10 +64,17 @@ function RenderItems({
   items,
   previewBlocks,
   activeScreenSize,
+  parentWidth,
+  parentActualWidth,
 }) {
+  if (parentActualWidth) {
+    gridWidth = parentActualWidth;
+  }
+  const currentGrid = parentWidth ? parentWidth : grid;
   const blocksLayoutFieldname = getBlocksLayoutFieldname();
-  const snapOneWidth = gridWidth / grid;
-  const gridRange = range(1, grid);
+  // const snapOneWidth = parentWidth ? gridWidth / parentWidth : gridWidth / grid;
+  const snapOneWidth = gridWidth / currentGrid;
+  const gridRange = range(1, currentGrid);
   const snapWidths = gridRange.map(step => step * snapOneWidth);
   const columnsWidths = gridRange.reduce((acc, val) => {
     acc[val] = val * snapOneWidth;
@@ -80,7 +87,9 @@ function RenderItems({
   //   setFormData(localFormData);
   // }, [localFormData]);
 
+  const [disableDrag, setDisableDrag] = useState(false);
   let gridItems = items;
+  console.log('griditems in gridlayout', gridItems);
 
   if (!gridItems) {
     gridItems = unflattenToHTML({
@@ -91,7 +100,7 @@ function RenderItems({
 
   const grid_layout =
     formData[blocksLayoutFieldname].grid_layout[activeScreenSize];
-  console.log('griditemslength', grid_layout);
+  console.log('griditemslength', gridWidth);
   // const columnsBasedOnWidth =
   return gridItems.map(({ children, data }) => (
     <div
@@ -115,6 +124,7 @@ function RenderItems({
             : 'column' + formData[blocksLayoutFieldname].classMapping[data.id]
         }
         position={data.position}
+        isDropDisabled={disableDrag}
       >
         {(provided, snapshot) => (
           <div
@@ -154,6 +164,7 @@ function RenderItems({
             ) : data.type !== 'empty-column' ? (
               <React.Fragment>
                 <ResizableBox
+                  onBeforeCapture={() => setDisableDrag(true)}
                   width={columnsWidths[data.width]}
                   axis="x"
                   // snap={{ x: [12] }}
@@ -175,6 +186,8 @@ function RenderItems({
                     return d;
                   }}
                   onResizeStop={(e, d) => {
+                    setDisableDrag(false);
+
                     const beforeWidth = columnsWidths[data.width];
                     const afterWidth = d.size.width;
                     setFormData(
@@ -189,13 +202,13 @@ function RenderItems({
                         activeScreenSize,
                       }),
                     );
-                    // return d;
                   }}
                 >
                   <Draggable
                     key={data.id}
                     draggableId={data.id}
                     index={parseInt(data.position)}
+                    isDragDisabled={disableDrag}
                   >
                     {(provided, snapshot) => (
                       <div
@@ -236,12 +249,15 @@ function RenderItems({
               </React.Fragment>
             ) : (
               <ResizableBox
+                onClick={() => setDisableDrag(true)}
                 width={columnsWidths[data.width]}
                 axis="x"
                 // snap={{ x: [12] }}
                 onResizeStart={(e, d) => {
                   const beforeWidth = columnsWidths[data.width];
                   const afterWidth = d.size.width;
+
+                  console.log('onResizeStart', beforeWidth, afterWidth);
                   setFormData(
                     onChangeWidth({
                       beforeWidth,
@@ -257,6 +273,8 @@ function RenderItems({
                   return d;
                 }}
                 onResizeStop={(e, d) => {
+                  setDisableDrag(false);
+
                   const beforeWidth = columnsWidths[data.width];
                   const afterWidth = d.size.width;
                   setFormData(
@@ -271,13 +289,13 @@ function RenderItems({
                       activeScreenSize,
                     }),
                   );
-                  // return d;
                 }}
               >
                 <Draggable
                   key={data.id}
                   draggableId={data.id}
                   index={parseInt(data.position)}
+                  isDragDisabled={disableDrag}
                 >
                   {(provided, snapshot) => (
                     <div
@@ -308,6 +326,8 @@ function RenderItems({
                             setFormData={setFormData}
                             previewBlocks={previewBlocks}
                             activeScreenSize={activeScreenSize}
+                            parentWidth={data.width}
+                            parentActualWidth={columnsWidths[data.width]}
                           />
                         ) : (
                           ''
