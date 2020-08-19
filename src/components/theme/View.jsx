@@ -60,18 +60,23 @@ const RenderItems = ({ items, formData }) => {
       activeScreenSize: 'lg',
     });
   }
+  useEffect(() => {
+    require('../../css/grid-layout.less');
+    require('../../css/globals.less');
+  }, []);
 
-  return gridItems.map(({ children, data }) => (
-    <div
-      id={data.id}
-      className={
-        data.className === 'row'
-          ? data.className
-          : formData.blocks_layout.classMapping[data.id]
-      }
-      position={data.position}
-    >
-      {data.type === 'row' || data.type === 'empty-column' ? (
+  return gridItems.map(
+    ({ children, data }) =>
+      // <div
+      //   id={data.id}
+      //   className={
+      //     data.className === 'row'
+      //       ? data.className
+      //       : formData.blocks_layout.classMapping[data.id]
+      //   }
+      //   position={data.position}
+      // >
+      data.type === 'row' || data.type === 'empty-column' ? (
         <div
           className={
             data.type === 'empty-column'
@@ -79,12 +84,16 @@ const RenderItems = ({ items, formData }) => {
               : data.className
           }
         >
-          {children.length && (
+          {children.length ? (
             <RenderItems items={children} formData={formData} />
+          ) : (
+            ''
           )}
         </div>
       ) : (
-        <React.Fragment>
+        <div
+          className={`column${formData.blocks_layout.classMapping[data.id]}`}
+        >
           <BlockViewWrapper
             style={{ maxWidth: '100%' }}
             blockid={data.id}
@@ -94,10 +103,10 @@ const RenderItems = ({ items, formData }) => {
             // showUpdate={this.onBlockShowUpdate}
             // containerWidth={this.state.containerWidth}
           />
-        </React.Fragment>
-      )}
-    </div>
-  ));
+        </div>
+      ),
+    //  </div>
+  );
 };
 
 const GridLayoutView = props => {
